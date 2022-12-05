@@ -23,8 +23,6 @@ ip netns exec mozim ip addr add ${DHCP_SRV_IP}/24 dev eth1.ep
 rm $LEASE_FILE -f
 ip netns exec mozim dnsmasq \
     --log-dhcp \
-    --keep-in-foreground \
-    --no-daemon \
     --conf-file=/dev/null \
     --dhcp-leasefile=$LEASE_FILE \
     --no-hosts \
@@ -36,6 +34,7 @@ ip netns exec mozim dnsmasq \
     --bind-interfaces \
     --except-interface=lo \
     --clear-on-reload \
+    --pid-file=$PID_FILE \
     --listen-address=$DHCP_SRV_IP \
     --dhcp-range=${IPV4_BLOCK}.2,${IPV4_BLOCK}.50,60 --no-ping &
 sleep 5

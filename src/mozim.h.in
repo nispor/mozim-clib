@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: Apache-2.0
+
+
+#ifndef _LIBMOZIM_H_
+#define _LIBMOZIM_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+
+#define MOZIM_VERSION_MAJOR        @_VERSION_MAJOR@
+#define MOZIM_VERSION_MINOR        @_VERSION_MINOR@
+#define MOZIM_VERSION_MICRO        @_VERSION_MICRO@
+
+#define MOZIM_VERSION              \
+    ((MOZIM_VERSION_MAJOR * 10000) + \
+     (MOZIM_VERSION_MINOR * 100) + \
+     MOZIM_VERSION_MICRO)
+
+#define MOZIM_PASS                 0
+#define MOZIM_FAIL                 1
+#define MOZIM_FAIL_NULL_POINTER    2
+#define MOZIM_FAIL_INVALID_STR     3
+
+struct mozim_dhcpv4_client;
+struct mozim_dhcpv4_lease;
+struct mozim_dhcpv4_config;
+
+int mozim_dhcpv4_config_new(struct mozim_dhcpv4_config **config,
+                            const char *iface_name);
+
+int mozim_dhcpv4_client_init(struct mozim_dhcpv4_client **client,
+                             const struct mozim_dhcpv4_config *config,
+                             char **log,
+                             char **err_kind,
+                             char **err_msg);
+
+int mozim_dhcpv4_client_poll(struct mozim_dhcpv4_client *client,
+                             uint32_t wait_time,
+                             uint64_t **events,
+                             uint64_t *event_count,
+                             char **log,
+                             char **err_kind,
+                             char **err_msg);
+
+int mozim_dhcpv4_client_process(struct mozim_dhcpv4_client *client,
+                                uint64_t event,
+                                struct mozim_dhcpv4_lease **lease,
+                                char **log,
+                                char **err_kind,
+                                char **err_msg);
+
+uint32_t mozim_dhcpv4_lease_get_t1(const struct mozim_dhcpv4_lease *lease);
+uint32_t mozim_dhcpv4_lease_get_t2(const struct mozim_dhcpv4_lease *lease);
+uint32_t mozim_dhcpv4_lease_get_yiaddr(const struct mozim_dhcpv4_lease *lease);
+
+void mozim_dhcpv4_config_free(struct mozim_dhcpv4_config *config);
+void mozim_dhcpv4_client_free(struct mozim_dhcpv4_client *client);
+void mozim_dhcpv4_lease_free(struct mozim_dhcpv4_lease *lease);
+void mozim_events_free(uint64_t *events, uint64_t event_count);
+void mozim_cstring_free(char *cstring);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+#endif /* End of _LIBMOZIM_H_ */

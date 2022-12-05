@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=@LIBDIR@
+includedir=@INCLUDE_DIR@/
+
+Name: mozim
+Version: @VERSION@
+Description: Mozim DHCP client C binding library
+Requires:
+Libs: -L${libdir} -lmozim
+Cflags: -I${includedir}

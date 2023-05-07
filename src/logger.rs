@@ -84,7 +84,7 @@ pub(crate) struct MemoryLogger {
 
 impl log::Log for MemoryLogger {
     fn enabled(&self, metadata: &log::Metadata) -> bool {
-        metadata.target().starts_with("rabc::")
+        metadata.target().starts_with("mozim::")
     }
 
     fn log(&self, record: &log::Record) {

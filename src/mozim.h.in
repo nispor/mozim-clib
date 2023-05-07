@@ -37,6 +37,8 @@ int mozim_dhcpv4_client_init(struct mozim_dhcpv4_client **client,
                              char **err_kind,
                              char **err_msg);
 
+int mozim_dhcpv4_client_get_fd(struct mozim_dhcpv4_client *client);
+
 int mozim_dhcpv4_client_poll(struct mozim_dhcpv4_client *client,
                              uint32_t wait_time,
                              uint64_t **events,
@@ -52,9 +54,23 @@ int mozim_dhcpv4_client_process(struct mozim_dhcpv4_client *client,
                                 char **err_kind,
                                 char **err_msg);
 
-uint32_t mozim_dhcpv4_lease_get_t1(const struct mozim_dhcpv4_lease *lease);
-uint32_t mozim_dhcpv4_lease_get_t2(const struct mozim_dhcpv4_lease *lease);
+int mozim_dhcpv4_client_release_lease(struct mozim_dhcpv4_client *client,
+                                      struct mozim_dhcpv4_lease *lease,
+                                      char **log,
+                                      char **err_kind,
+                                      char **err_msg);
+
+uint32_t mozim_dhcpv4_lease_get_lease_time(
+        const struct mozim_dhcpv4_lease *lease);
+uint32_t mozim_dhcpv4_lease_get_prefix_length(
+        const struct mozim_dhcpv4_lease *lease);
+size_t mozim_dhcpv4_lease_get_gateway_count(
+        const struct mozim_dhcpv4_lease *lease);
+uint32_t mozim_dhcpv4_lease_get_gateway(
+        const struct mozim_dhcpv4_lease *lease, size_t index);
 uint32_t mozim_dhcpv4_lease_get_yiaddr(const struct mozim_dhcpv4_lease *lease);
+
+const char *mozim_dhcpv4_config_get_iface(struct mozim_dhcpv4_config *config);
 
 void mozim_dhcpv4_config_free(struct mozim_dhcpv4_config *config);
 void mozim_dhcpv4_client_free(struct mozim_dhcpv4_client *client);

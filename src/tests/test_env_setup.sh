@@ -5,21 +5,23 @@ LEASE_FILE="/tmp/test_dnsmasq.lease"
 IPV4_BLOCK="192.0.2"
 DHCP_SRV_IP="${IPV4_BLOCK}.1"
 
+
+if [ -e $PID_FILE ];then
+    kill `cat $PID_FILE`
+fi
+
 if [ "CHK$1" == "CHKrm" ]; then
-    if [ -e $PID_FILE ];then
-        kill `cat $PID_FILE`
-    fi
-    ip link del eth1
+    ip link del dhcpcli
     ip netns del mozim
     exit 0
 fi
 
 ip netns add mozim
-ip link add eth1 type veth peer name eth1.ep
-ip link set eth1 up
-ip link set eth1.ep netns mozim
-ip netns exec mozim ip link set eth1.ep up
-ip netns exec mozim ip addr add ${DHCP_SRV_IP}/24 dev eth1.ep
+ip link add dhcpcli type veth peer name dhcpsrv
+ip link set dhcpcli up
+ip link set dhcpsrv netns mozim
+ip netns exec mozim ip link set dhcpsrv up
+ip netns exec mozim ip addr add ${DHCP_SRV_IP}/24 dev dhcpsrv
 rm $LEASE_FILE -f
 ip netns exec mozim dnsmasq \
     --log-dhcp \

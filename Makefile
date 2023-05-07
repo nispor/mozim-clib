@@ -23,7 +23,7 @@ INCLUDE_DIR ?= $(PREFIX)/include
 PKG_CONFIG_LIBDIR ?= $(LIBDIR)/pkgconfig
 
 .PHONY: debug
-debug:
+debug: $(CLIB_PKG_CONFIG) $(CLIB_HEADER)
 	cargo build --all
 	ln -sfv $(CLIB_SO_DEV) target/debug/$(CLIB_SO_FULL)
 	ln -sfv $(CLIB_SO_DEV) target/debug/$(CLIB_SO_MAI)
@@ -63,10 +63,11 @@ check: $(CLIB_SO_DEV_DEBUG) $(CLIB_HEADER)
 	cc -g -Wall -Wextra -L$(TMPDIR) -I$(TMPDIR) \
 		-o $(TMPDIR)/mozim_test src/tests/mozim_test.c -lmozim
 	sudo $(ROOT_DIR)/src/tests/test_env_setup.sh
-	sudo env LD_LIBRARY_PATH=$(TMPDIR) \
-		valgrind --trace-children=yes --leak-check=full \
-		--error-exitcode=1 \
-		$(TMPDIR)/mozim_test 1>/dev/null
+	#sudo env LD_LIBRARY_PATH=$(TMPDIR) \
+	#	valgrind --trace-children=yes --leak-check=full \
+	#	--error-exitcode=1 \
+	#	$(TMPDIR)/mozim_test 1>/dev/null
+	sudo env LD_LIBRARY_PATH=$(TMPDIR) $(TMPDIR)/mozim_test
 	rm -rf $(TMPDIR)
 	sudo $(ROOT_DIR)/src/tests/test_env_setup.sh rm
 

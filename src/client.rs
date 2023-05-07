@@ -230,8 +230,16 @@ pub extern "C" fn mozim_dhcpv4_client_process(
 pub extern "C" fn mozim_dhcpv4_client_get_fd(
     client: *const DhcpV4Client,
 ) -> c_int {
-    let client: &DhcpV4Client = unsafe { &*client };
-    client.as_raw_fd()
+    if !client.is_null() {
+        let client: &DhcpV4Client = unsafe { &*client };
+        client.as_raw_fd()
+    } else {
+        log::error!(
+            "Got NULL point of client argument in \
+            mozim_dhcpv4_client_get_fd()"
+        );
+        -1
+    }
 }
 
 #[no_mangle]
